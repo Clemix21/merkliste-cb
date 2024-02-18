@@ -41,4 +41,4 @@ class NoteController {
         $stmt->execute([$id]);
     }
 }
-?>
+

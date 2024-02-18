@@ -9,15 +9,25 @@ services:
       - ./src:/var/www/html
     depends_on:
       - mysql
+      - phpmyadmin
 
   mysql:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: password123    # Passwort für den MySQL-Root-Benutzer
-      MYSQL_DATABASE: merkliste           # Name der Datenbank
-      MYSQL_USER: user                    # Benutzername für die Datenbank
-      MYSQL_PASSWORD: password123         # Passwort für den MySQL-Benutzer
+      MYSQL_ROOT_PASSWORD: password123
+      MYSQL_DATABASE: merkliste
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password123
     ports:
       - "3306:3306"
     volumes:
-      - ./data:/var/lib/mysql             # Verzeichnis für Datenbankdateien
+      - ./data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - mysql
+    ports:
+      - "8181:80"
+    environment:
+      PMA_HOST: mysql

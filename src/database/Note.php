@@ -18,4 +18,3 @@ class Note {
         $this->status = $status;
     }
 }
-?>
