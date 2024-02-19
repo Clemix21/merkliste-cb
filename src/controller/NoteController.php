@@ -1,8 +1,8 @@
 <?php
 // src/controller/NoteController.php
 
-require_once('../model/Note.php');
-require_once('../database/Database.php');
+require_once('../model/Database.php');
+require_once('../database/Note.php');
 
 class NoteController {
     public function getAllNotes() {
