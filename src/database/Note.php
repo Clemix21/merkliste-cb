@@ -1,5 +1,5 @@
 <?php
-// src/model/Note.php
+// src/database/Note.php
 
 class Note {
     public $id;

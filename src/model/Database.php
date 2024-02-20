@@ -1,5 +1,5 @@
 <?php
-// src/database/Database.php
+// src/model/Database.php
 
 class Database {
     private $host = 'mysql';

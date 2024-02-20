@@ -1,5 +1,7 @@
 <?php
+require_once('controller/NoteController.php');
 ?>
+
 
 <!DOCTYPE html>
 <html lang="de">
@@ -45,24 +47,28 @@
             </table>
             <hr>
             <h2>Neue Notiz anlegen</h2>
-            <form>
+            <form action="controller/NoteController.php" method="post">
                 <div class="row">
                     <div class="col-12">
-                        <label for="new_note_name">Name</label><input id="new_note_name" class="form-control" type="text">
+                        <label for="new_note_name">Name</label>
+                        <input id="new_note_name" name="name" class="form-control" type="text" required>
                     </div>
                     <div class="col-12">
-                        <label for="new_note_description">Beschreibung</label><textarea id="new_note_description" class="form-control"></textarea>
+                        <label for="new_note_description">Beschreibung</label>
+                        <textarea id="new_note_description" name="description" class="form-control" required></textarea>
                     </div>
                     <div class="col-6">
-                        <label for="new_note_date">Datum</label><input id="new_note_date" class="form-control" type="date">
+                        <label for="new_note_date">Datum</label>
+                        <input id="new_note_date" name="date" class="form-control" type="date" required>
                     </div>
                     <div class="col-6">
-                        <label for="new_note_time">Uhrzeit</label><input id="new_note_time" class="form-control" type="time">
+                        <label for="new_note_time">Uhrzeit</label>
+                        <input id="new_note_time" name="time" class="form-control" type="time" required>
                     </div>
                     <div class="col-12">
                         <br>
-                        <button class="btn btn-success">Anlegen</button>
-                        <button class="btn btn-danger">Zurücksetzen</button>
+                        <button type="submit" class="btn btn-success">Anlegen</button>
+                        <button type="reset" class="btn btn-danger">Zurücksetzen</button>
                     </div>
                 </div>
             </form>

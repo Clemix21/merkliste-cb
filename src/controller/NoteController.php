@@ -17,14 +17,24 @@ class NoteController {
         $conn = $db->getConnection();
         $stmt = $conn->prepare('INSERT INTO notes (name, description, date, time, status) VALUES (?, ?, ?, ?, "not_done")');
         $stmt->execute([$name, $description, $date, $time]);
+        $lastInsertId = $conn->lastInsertId();
         return $conn->lastInsertId();
+
+
+
     }
+
+
 
     public function updateNoteStatus($id, $status) {
         $db = new Database();
         $conn = $db->getConnection();
         $stmt = $conn->prepare('UPDATE notes SET status = ? WHERE id = ?');
         $stmt->execute([$status, $id]);
+
+        // Weiterleitung zur Main Seite
+        header('Location: index.php');
+        exit;
     }
 
     public function updateNoteDetails($id, $name, $description, $date, $time) {
@@ -32,6 +42,10 @@ class NoteController {
         $conn = $db->getConnection();
         $stmt = $conn->prepare('UPDATE notes SET name = ?, description = ?, date = ?, time = ? WHERE id = ?');
         $stmt->execute([$name, $description, $date, $time, $id]);
+
+        // Weiterleitung zur Main Seite
+        header('Location: index.php');
+        exit;
     }
 
     public function deleteNote($id) {
@@ -39,6 +53,10 @@ class NoteController {
         $conn = $db->getConnection();
         $stmt = $conn->prepare('DELETE FROM notes WHERE id = ?');
         $stmt->execute([$id]);
+
+        // Weiterleitung zur Main Seite
+        header('Location: index.php');
+        exit;
     }
 }
 
