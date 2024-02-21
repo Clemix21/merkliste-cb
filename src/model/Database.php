@@ -10,7 +10,9 @@ class Database {
     public function getConnection() {
         $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
         $conn = new PDO($dsn, $this->user, $this->pass);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
         return $conn;
     }
 }

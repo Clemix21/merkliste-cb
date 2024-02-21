@@ -1,5 +1,5 @@
 <?php
-require_once('controller/NoteController.php');
+require_once(__DIR__.'/controller/NoteController.php');
 ?>
 
 

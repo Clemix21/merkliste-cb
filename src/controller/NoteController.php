@@ -1,8 +1,22 @@
 <?php
 // src/controller/NoteController.php
 
-require_once('../model/Database.php');
-require_once('../database/Note.php');
+require_once(__DIR__.'/../model/Database.php');
+require_once(__DIR__.'/../database/Note.php');
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $noteController = new NoteController();
+    // Nehmen Sie an, dass ein 'action'-Feld im Formular bestimmt, welche Aktion ausgeführt werden soll
+    if (isset($_POST['action']) && $_POST['action'] == 'create') {
+        $name = isset($_POST['name']) ? $_POST['name'] : '';
+        $description = isset($_POST['description']) ? $_POST['description'] : '';
+        $date = isset($_POST['date']) ? $_POST['date'] : '';
+        $time = isset($_POST['time']) ? $_POST['time'] : '';
+        $noteController->createNote($name, $description, $date, $time);
+        header('Location: ../index.php'); // Stellen Sie sicher, dass dies der korrekte Pfad ist
+        exit;
+    }
+}
 
 class NoteController {
     public function getAllNotes() {
@@ -17,14 +31,9 @@ class NoteController {
         $conn = $db->getConnection();
         $stmt = $conn->prepare('INSERT INTO notes (name, description, date, time, status) VALUES (?, ?, ?, ?, "not_done")');
         $stmt->execute([$name, $description, $date, $time]);
-        $lastInsertId = $conn->lastInsertId();
+
         return $conn->lastInsertId();
-
-
-
     }
-
-
 
     public function updateNoteStatus($id, $status) {
         $db = new Database();
@@ -59,4 +68,7 @@ class NoteController {
         exit;
     }
 }
+
+
+
 

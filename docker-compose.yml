@@ -1,12 +1,13 @@
 version: '3'
-
 services:
   php:
-    image: php:7.4-apache
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:80"
     volumes:
-      - ./src:/var/www/html
+      - merklisten_volume:/var/www/html
     depends_on:
       - mysql
       - phpmyadmin
@@ -31,3 +32,6 @@ services:
       - "8181:80"
     environment:
       PMA_HOST: mysql
+
+volumes:
+  merklisten_volume: {}
