@@ -1,5 +1,23 @@
 <?php
 require_once(__DIR__.'/controller/NoteController.php');
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $action = isset($_POST['action']) ? $_POST['action'] : ''; // Sicherstellen, dass 'action' gesetzt ist.
+    $noteController = new NoteController();
+
+    if ($action == 'create') {
+        $name = isset($_POST['name']) ? $_POST['name'] : '';
+        $description = isset($_POST['description']) ? $_POST['description'] : '';
+        $date = isset($_POST['date']) ? $_POST['date'] : '';
+        $time = isset($_POST['time']) ? $_POST['time'] : '';
+        $noteController->createNote($name, $description, $date, $time);
+    }
+
+    // Weiterleitung, um Doppelübermittlungen des Formulars zu verhindern.
+    header('Location: index.php');
+    exit;
+}
+
 ?>
 
 
@@ -48,6 +66,7 @@ require_once(__DIR__.'/controller/NoteController.php');
             <hr>
             <h2>Neue Notiz anlegen</h2>
             <form action="controller/NoteController.php" method="post">
+                <input type="hidden" name="action" value="create">
                 <div class="row">
                     <div class="col-12">
                         <label for="new_note_name">Name</label>

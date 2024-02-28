@@ -3,8 +3,8 @@
 
 class Database {
     private $host = 'mysql';
-    private $user = 'root';
-    private $pass = 'root';
+    private $user = 'user';
+    private $pass = 'password123';
     private $dbname = 'merkliste';
 
     public function getConnection() {
