@@ -1,9 +1,10 @@
 <?php
 require_once(__DIR__.'/controller/NoteController.php');
 
+$noteController = new NoteController();
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $action = isset($_POST['action']) ? $_POST['action'] : ''; // Sicherstellen, dass 'action' gesetzt ist.
-    $noteController = new NoteController();
 
     if ($action == 'create') {
         $name = isset($_POST['name']) ? $_POST['name'] : '';
@@ -11,16 +12,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $date = isset($_POST['date']) ? $_POST['date'] : '';
         $time = isset($_POST['time']) ? $_POST['time'] : '';
         $noteController->createNote($name, $description, $date, $time);
+    } elseif ($action == 'delete') {
+        $id = isset($_POST['id']) ? $_POST['id'] : null;
+        if ($id) {
+            $noteController->deleteNote($id);
+        }
     }
 
-    // Weiterleitung, um Doppelübermittlungen des Formulars zu verhindern.
     header('Location: index.php');
     exit;
 }
 
-$noteController = new NoteController();
 $notes = $noteController->getAllNotes();
-
 ?>
 
 
@@ -30,6 +33,7 @@ $notes = $noteController->getAllNotes();
     <meta charset="utf-8">
     <title>Merkliste</title>
     <link rel="stylesheet" href="styles/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
 <div class="container">
@@ -59,7 +63,19 @@ $notes = $noteController->getAllNotes();
                             <input type="hidden" name="id" value="<?= $note['id'] ?>">
                             <label for="note_completed_<?= $note['id']?>"></label><input id="note_completed_<?= $note['id']?>" type="checkbox" name="status" value="erledigt" <?= $note['status'] == 'erledigt' ? 'checked' : '' ?> onchange="this.form.submit()">
                         </td>
-                        <td><span class="fa fa-edit mr-1"></span><span class="fa fa-times"></span></td>
+                        <td>
+                            <!-- bearbeiten -->
+                            <span class="fas fa-pencil-alt mr-1"></span>
+                            <!-- löschen -->
+                            <form action="controller/NoteController.php" method="post" style="display:inline">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="<?= $note['id'] ?>">
+                                <button type="submit" class="btn btn-link p-0" style="color:inherit; text-decoration:none; border:none; background:none;">
+                                    <span class="fas fa-trash"></span>
+                                </button>
+                            </form>
+                        </td>
+
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
