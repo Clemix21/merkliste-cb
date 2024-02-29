@@ -18,6 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit;
 }
 
+$noteController = new NoteController();
+$notes = $noteController->getAllNotes();
+
 ?>
 
 
@@ -45,22 +48,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td><label for="note1_name">Entwicklungsumgebung aufsetzen</label></td>
-                    <td><label for="note1_description">Was dem Handwerker der Hammer, das ist dem Programmierer die Entwicklungsumgebung. Darum: PHPStorm und XAMPP installieren.</label></td>
-                    <td><label for="note1_date">11.03.19</label></td>
-                    <td><label for="note1_time">10:00</label></td>
-                    <td><label for="note1_completed"></label><input id="note1_completed" type="checkbox"></td>
-                    <td><span class="fa fa-edit mr-1"></span><span class="fa fa-times"></span></td>
-                </tr>
-                <tr>
-                    <td><label for="note2_name">Merkliste</label></td>
-                    <td><label for="note2_description">Zum Einstieg bauen wir eine Merkliste.</label></td>
-                    <td><label for="note2_date">11.03.19</label></td>
-                    <td><label for="note2_time">11:00</label></td>
-                    <td><label for="note2_completed"></label><input id="note2_completed" type="checkbox"></td>
-                    <td><span class="fa fa-edit mr-1"></span><span class="fa fa-times"></span></td>
-                </tr>
+                <?php foreach ($notes as $note): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($note['name']) ?></td>
+                        <td><?= htmlspecialchars($note['description']) ?></td>
+                        <td><?= htmlspecialchars($note['date']) ?></td>
+                        <td><?= htmlspecialchars($note['time']) ?></td>
+                        <td>
+                            <input type="hidden" name="action" value="updateStatus">
+                            <input type="hidden" name="id" value="<?= $note['id'] ?>">
+                            <label for="note_completed_<?= $note['id']?>"></label><input id="note_completed_<?= $note['id']?>" type="checkbox" name="status" value="erledigt" <?= $note['status'] == 'erledigt' ? 'checked' : '' ?> onchange="this.form.submit()">
+                        </td>
+                        <td><span class="fa fa-edit mr-1"></span><span class="fa fa-times"></span></td>
+                    </tr>
+                <?php endforeach; ?>
                 </tbody>
             </table>
             <hr>
