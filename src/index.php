@@ -3,25 +3,7 @@ require_once(__DIR__.'/controller/NoteController.php');
 
 $noteController = new NoteController();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $action = isset($_POST['action']) ? $_POST['action'] : ''; // Sicherstellen, dass 'action' gesetzt ist.
 
-    if ($action == 'create') {
-        $name = isset($_POST['name']) ? $_POST['name'] : '';
-        $description = isset($_POST['description']) ? $_POST['description'] : '';
-        $date = isset($_POST['date']) ? $_POST['date'] : '';
-        $time = isset($_POST['time']) ? $_POST['time'] : '';
-        $noteController->createNote($name, $description, $date, $time);
-    } elseif ($action == 'delete') {
-        $id = isset($_POST['id']) ? $_POST['id'] : null;
-        if ($id) {
-            $noteController->deleteNote($id);
-        }
-    }
-
-    header('Location: index.php');
-    exit;
-}
 
 $notes = $noteController->getAllNotes();
 ?>
@@ -82,7 +64,7 @@ $notes = $noteController->getAllNotes();
             </table>
             <hr>
             <h2>Neue Notiz anlegen</h2>
-            <form action="controller/NoteController.php" method="post">
+            <form id="noteForm" action="controller/NoteController.php" method="post">
                 <input type="hidden" name="action" value="create">
                 <div class="row">
                     <div class="col-12">
@@ -111,5 +93,29 @@ $notes = $noteController->getAllNotes();
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.getElementById('noteForm');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            fetch('controller/NoteController.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if(data.success) {
+                        // später vielleicht dynamischer Listen reload
+                    }
+                })
+            });
+
+        });
+    })
+</script>
+
 </body>
 </html>
