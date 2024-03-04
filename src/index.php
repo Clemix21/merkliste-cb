@@ -44,7 +44,9 @@ $notes = $noteController->getAllNotes();
                         </td>
                         <td>
                             <!-- bearbeiten -->
-                            <span class="fas fa-pencil-alt mr-1"></span>
+                            <button type="button" class="edit-button" data-note-id="<?= $note['id'] ?>" style="background:none;border:none;">
+                                <span class="fas fa-pencil-alt mr-1"></span>
+                            </button>
                             <!-- löschen -->
                             <button type="button" class="delete-button" data-note-id="<?= $note['id'] ?>" style="background:none;border:none;">
                                 <span class="fas fa-trash"></span>
@@ -153,7 +155,6 @@ $notes = $noteController->getAllNotes();
             });
         });
     });
-</script>
 
 
 </body>

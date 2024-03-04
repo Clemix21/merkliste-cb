@@ -38,7 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             }
             break;
 
-        //weitere Cases für andere Funktionen
+        case 'updateNoteDetails':
+            if (isset($_POST['id'], $_POST['name'], $_POST['description'], $_POST['date'], $_POST['time'])) {
+                $id = $_POST['id'];
+                $name = $_POST['name'];
+                $description = $_POST['description'];
+                $date = $_POST['date'];
+                $time = $_POST['time'];
+                $noteController->updateNoteDetails($id, $name, $description, $date, $time);
+                echo json_encode(["success" => true, "message" => "Note details updated successfully"]);
+                exit;
+            }
+            break;
     }
 }
 
@@ -78,10 +89,12 @@ class NoteController {
         $db = new Database();
         $conn = $db->getConnection();
         $stmt = $conn->prepare('UPDATE notes SET name = ?, description = ?, date = ?, time = ? WHERE id = ?');
-        $stmt->execute([$name, $description, $date, $time, $id]);
 
-        // Weiterleitung zur Main Seite
-        header('Location: index.php');
+        if($stmt->execute([$name, $description, $date, $time, $id])) {
+            echo json_encode(['success' => true, 'message' => 'Note details updated successfully']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to update note details']);
+        }
         exit;
     }
 
