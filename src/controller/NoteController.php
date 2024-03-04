@@ -66,9 +66,11 @@ class NoteController {
         $db = new Database();
         $conn = $db->getConnection();
         $stmt = $conn->prepare('UPDATE notes SET status = ? WHERE id = ?');
-        $stmt->execute([$status, $id]);
-
-        header('Location: index.php');
+        if($stmt->execute([$status, $id])) {
+            echo json_encode(['success' => true, 'message' => 'Status updated successfully']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to update status']);
+        }
         exit;
     }
 
