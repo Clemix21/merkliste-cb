@@ -155,6 +155,7 @@ $notes = $noteController->getAllNotes();
             });
         });
     });
+</script>
 
 
 </body>
