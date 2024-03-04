@@ -2,9 +2,6 @@
 require_once(__DIR__.'/controller/NoteController.php');
 
 $noteController = new NoteController();
-
-
-
 $notes = $noteController->getAllNotes();
 ?>
 
@@ -43,19 +40,15 @@ $notes = $noteController->getAllNotes();
                         <td>
                             <input type="hidden" name="action" value="updateStatus">
                             <input type="hidden" name="id" value="<?= $note['id'] ?>">
-                            <label for="note_completed_<?= $note['id']?>"></label><input id="note_completed_<?= $note['id']?>" type="checkbox" name="status" value="erledigt" <?= $note['status'] == 'erledigt' ? 'checked' : '' ?> onchange="this.form.submit()">
+                            <label for="note_completed_<?= $note['id']?>"></label><input class="status-checkbox" id="note_completed_<?= $note['id']?>" type="checkbox" data-note-id="<?= $note['id']?>" <?= $note['status'] == 'erledigt' ? 'checked' : '' ?>>
                         </td>
                         <td>
                             <!-- bearbeiten -->
                             <span class="fas fa-pencil-alt mr-1"></span>
                             <!-- löschen -->
-                            <form action="controller/NoteController.php" method="post" style="display:inline">
-                                <input type="hidden" name="action" value="delete">
-                                <input type="hidden" name="id" value="<?= $note['id'] ?>">
-                                <button type="submit" class="btn btn-link p-0" style="color:inherit; text-decoration:none; border:none; background:none;">
-                                    <span class="fas fa-trash"></span>
-                                </button>
-                            </form>
+                            <button type="button" class="delete-button" data-note-id="<?= $note['id'] ?>" style="background:none;border:none;">
+                                <span class="fas fa-trash"></span>
+                            </button>
                         </td>
 
                     </tr>
@@ -108,14 +101,60 @@ $notes = $noteController->getAllNotes();
                 .then(data => {
                     console.log(data);
                     if(data.success) {
-                        // später vielleicht dynamischer Listen reload
+                        window.location.reload();
+                        form.reset();
                     }
                 })
-            });
-
+                .catch(error => console.error('Error:', error));
         });
-    })
+    });
+
+    document.querySelectorAll('.delete-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const noteId = this.getAttribute('data-note-id');
+            fetch('controller/NoteController.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=delete&id=${noteId}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        window.location.reload();
+                    } else {
+                        console.error('Fehler beim Löschen der Notiz');
+                    }
+                })
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.status-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const noteId = this.getAttribute('data-note-id');
+                const status = this.checked ? 'erledigt' : 'nicht erledigt';
+                fetch('controller/NoteController.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=updateStatus&id=${noteId}&status=${status}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.success) {
+                            console.log('Status updated');
+                        } else {
+                            console.error('Failed to update status');
+                        }
+                    })
+            });
+        });
+    });
 </script>
+
 
 </body>
 </html>

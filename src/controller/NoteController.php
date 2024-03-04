@@ -19,7 +19,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 exit;
             }
             break;
-            //weitere Cases für andere Funktionen
+
+        case 'delete':
+            if (isset($_POST['id'])) {
+                $noteController->deleteNote($_POST['id']);
+                echo json_encode(["success" => true, "message" => "Note deleted successfully"]);
+                exit;
+            }
+            break;
+
+        case 'updateStatus':
+            if (isset($_POST['id'], $_POST['status'])) {
+                $id = $_POST['id'];
+                $status = $_POST['status'] === 'erledigt' ? 'erledigt' : 'nicht erledigt';
+                $noteController->updateNoteStatus($id, $status);
+                echo json_encode(["success" => true, "message" => "Status updated successfully"]);
+                exit;
+            }
+            break;
+
+        //weitere Cases für andere Funktionen
     }
 }
 
@@ -68,12 +87,14 @@ class NoteController {
         $db = new Database();
         $conn = $db->getConnection();
         $stmt = $conn->prepare('DELETE FROM notes WHERE id = ?');
-        $stmt->execute([$id]);
-
-        // Weiterleitung zur Main Seite
-        header('Location: index.php');
+        if($stmt->execute([$id])) {
+            echo json_encode(['success' => true, 'message' => 'Note successfully deleted']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'An error occurred while deleting the note']);
+        }
         exit;
     }
+
 }
 
 
